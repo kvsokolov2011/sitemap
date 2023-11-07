@@ -1,0 +1,36 @@
+{
+    "name": "cher4geo35/sitemap",
+    "description": "Create sitemap",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "kvsokolov2011",
+            "email": "kvsokolov2011@mail.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Cher4geo35\\Sitemap\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.3",
+        "laravel/framework": "^8.0",
+        "portedcheese/base-settings": "^3.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cher4geo35\\Sitemap\\SitemapServiceProvider"
+            ],
+            "aliases": {
+                "Sitemap": "Cher4geo35\\Sitemap\\Facade"
+            }
+        }
+    }
+}
