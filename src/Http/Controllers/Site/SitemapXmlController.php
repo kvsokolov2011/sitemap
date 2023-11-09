@@ -24,12 +24,14 @@ class SitemapXmlController extends Controller
     }
 
     public function model($model){
-        $key = 'sitemap-'.$model;
-        $model = ucfirst($model);
-        if(!Cache::get('key')) $models = $this->getModels('\App\\'.$model, $key);
+        $key = 'sitemap'.$model;
+        $name = explode('-', $model);
+        $name = end($name);
+        $model = $this->getModel($model);
+        if(!Cache::get('key')) $models = $this->getModels($model, $key);
         return response()->view('sitemap::site.sitemap.links', [
             'models' => $models,
-            'name' => strtolower($model),
+            'name' => $name,
             'route' => config('sitemap-xml.models')[$model],
         ])->header('Content-Type', 'text/xml');
     }

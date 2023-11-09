@@ -42,12 +42,12 @@ trait Sitemap
     public function getUpdateModels(){
         $models = [];
         foreach (config('sitemap-xml.models', []) as $model => $route){
-            $key = 'sitemap-'.strtolower($model);
-            if(class_exists('\App\\'.$model)){
-                $update_at = Cache::get($key, $this->getUpdateTime('\App\\'.$model, $key));
+            $key = 'sitemap'. $this->getName($model);
+            if(class_exists($model)){
+                $update_at = Cache::get($key, $this->getUpdateTime($model, $key));
                 if($update_at){
                     $models[] = (object)[
-                        'name' => strtolower($model),
+                        'name' => $this->getName($model),
                         'updated_at' => $update_at,
                     ];
                 }
@@ -56,6 +56,23 @@ trait Sitemap
         $models = (object)$models;
         Cache::put('models', $models, config('sitemap-xml.cacheLifetime', 0) );
         return $models;
+    }
+
+
+    public function getName($path){
+        $items = 'model';
+        foreach (explode("\\", $path) as $item){
+            if($item) $items = $items . '-' . $item;
+        }
+        return strtolower($items);
+    }
+
+    public function getModel($name){
+        $items = '';
+        foreach (explode("-", $name) as $item){
+            if($item != 'model') $items = $items . '\\' . ucfirst($item);
+        }
+        return $items;
     }
 
     /**

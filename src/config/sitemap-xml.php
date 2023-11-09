@@ -4,10 +4,10 @@ return [
     'cacheLifetime' => 0, //Время кеширования sitemap
     //Название моделей и их роуты
     'models' => [
-                    'News' => 'site.news.show',
-                    'Product' => 'catalog.products.show',
-                    'Category' => 'catalog.categories.show',
-                    'Page' => 'site.pages.show',
-                    'Folder' => 'site.folders.show',
+                    '\App\News' => 'site.news.show',
+                    '\App\Product' => 'catalog.products.show',
+                    '\App\Category' => 'catalog.categories.show',
+                    '\App\Page' => 'site.pages.show',
+                    '\App\Folder' => 'site.folders.show',
         ],
 ];
