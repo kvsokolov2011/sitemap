@@ -42,13 +42,13 @@ trait Sitemap
     public function getUpdateModels(){
         $models = [];
         foreach (config('sitemap-xml.models', []) as $model => $route){
-            $key = 'sitemap'. $this->getName($model);
+            $key = $this->getName($model);
             if(class_exists($model)){
-                $update_at = Cache::get($key, $this->getUpdateTime($model, $key));
-                if($update_at){
+                $updated_at = Cache::get($key, $this->getUpdateTime($model, $key));
+                if($updated_at){
                     $models[] = (object)[
                         'name' => $this->getName($model),
-                        'updated_at' => $update_at,
+                        'updated_at' => $updated_at,
                     ];
                 }
             }
@@ -80,10 +80,10 @@ trait Sitemap
      * @param $key
      * @return mixed|null
      */
-    public function getUpdateTime($class, $key){
+    public function getUpdateTime($model, $key){
         try{
-            $item = $class::query()->whereNotNull('published_at')->orderBy('updated_at', 'desc')->firstOrFail();
-            Cache::put($key, $item, config('sitemap-xml.cacheLifetime', 0));
+            $item = $model::query()->whereNotNull('published_at')->orderBy('updated_at', 'desc')->firstOrFail();
+            Cache::put($key, $item->updated_at, config('sitemap-xml.cacheLifetime', 0));
             return $item->updated_at;
         } catch (\Exception $e) {
             return null;
