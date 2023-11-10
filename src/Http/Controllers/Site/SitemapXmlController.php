@@ -11,15 +11,18 @@ class SitemapXmlController extends Controller
     use Sitemap;
 
     public function index() {
+        $key_menu = 'sitemap-menu';
+        $key_route = 'sitemap-route';
         return response()->view('sitemap::site.sitemap.index', [
-            'menu' => Cache::get('sitemap-menu-update', function(){return $this->getTimeMenuUpdate();}),
-            'routes' => Cache::get('routes', function(){return $this->getUpdateModels();}),
+            'menu' => Cache::get($key_menu, function() use ($key_menu) {return $this->getTimeMenuUpdate($key_menu);}),
+            'routes' => Cache::get($key_route , function() use ($key_route) {return $this->getUpdateModels($key_route);}),
         ])->header('Content-Type', 'text/xml');
     }
 
     public function menu() {
+        $key_menu_items = 'sitemap-menu-items';
         return response()->view('sitemap::site.sitemap.menu', [
-            'menuItems' => Cache::get('sitemap-menuItems', function(){return $this->getMenuItems();}),
+            'menuItems' => Cache::get($key_menu_items, function() use ($key_menu_items) {return $this->getMenuItems($key_menu_items);}),
         ])->header('Content-Type', 'text/xml');
     }
 

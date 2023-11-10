@@ -9,13 +9,14 @@ trait Sitemap
 {
 
     /**
+     * @param $key_menu
      * @return null
      */
-    public function getTimeMenuUpdate(){
+    public function getTimeMenuUpdate($key_menu){
         try{
             $menu = Menu::query()->where('key', 'main')->firstOrFail();
             $menu = $menu->items()->orderBy('updated_at', 'desc')->firstOrFail();
-            Cache::put('sitemap-menu-update', $menu, config('sitemap-xml.cacheLifetime', 0));
+            Cache::put($key_menu, $menu, config('sitemap-xml.cacheLifetime', 0));
             return $menu;
         } catch (\Exception $e) {
             return null;
@@ -25,11 +26,11 @@ trait Sitemap
     /**
      * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed|null
      */
-    private function getMenuItems() {
+    private function getMenuItems($key_menu_items) {
         try{
             $menu = Menu::query()->where('key', 'main')->firstOrFail();
             $menuItems = $menu->items;
-            Cache::put('sitemap-menuItems', $menu, config('sitemap-xml.cacheLifetime', 0));
+            Cache::put($key_menu_items, $menuItems, config('sitemap-xml.cacheLifetime', 0));
             return $menuItems;
         } catch (\Exception $e) {
             return null;
@@ -39,7 +40,7 @@ trait Sitemap
     /**
      * @return object
      */
-    public function getUpdateModels(){
+    public function getUpdateModels($key_route){
         $routes = [];
         foreach (config('sitemap-xml.models', []) as $model => $route){
             $key = $this->getName($route);
@@ -54,7 +55,7 @@ trait Sitemap
             }
         }
         $routes = (object)$routes;
-        Cache::put('routes', $routes, config('sitemap-xml.cacheLifetime', 0) );
+        Cache::put($key_route, $routes, config('sitemap-xml.cacheLifetime', 0) );
         return $routes;
     }
 
