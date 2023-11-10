@@ -8,7 +8,7 @@ Route::group([
     'as' => 'sitemap.'
 ], function () {
     Route::get('/sitemap.xml', [SitemapXmlController::class, 'index']);
-    Route::get('/sitemap/menu', [SitemapXmlController::class, 'menu'])->name('menu');
+    Route::get('/sitemap/menu.xml', [SitemapXmlController::class, 'menu'])->name('menu');
     Route::get('/sitemap/{route}', [SitemapXmlController::class, 'route'])->name('route');
 });
 
