@@ -8,11 +8,11 @@
         </sitemap>
     @endif
 
-    @if($models)
-        @foreach($models as $model)
+    @if($routes)
+        @foreach($routes as $route)
             <sitemap>
-                <loc>{{ route('sitemap.model', ['model' => $model->name]) }}</loc>
-                <lastmod>{{ $model->updated_at->toAtomString() }}</lastmod>
+                <loc>{{ route('sitemap.route', ['route' => $route->name]) }}</loc>
+                <lastmod>{{ $route->updated_at->toAtomString() }}</lastmod>
             </sitemap>
         @endforeach
     @endif

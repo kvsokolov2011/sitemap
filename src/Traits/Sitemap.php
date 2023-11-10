@@ -40,39 +40,35 @@ trait Sitemap
      * @return object
      */
     public function getUpdateModels(){
-        $models = [];
+        $routes = [];
         foreach (config('sitemap-xml.models', []) as $model => $route){
-            $key = $this->getName($model);
+            $key = $this->getName($route);
             if(class_exists($model)){
-                $updated_at = Cache::get($key, $this->getUpdateTime($model, $key));
+                $updated_at = Cache::get($key, $this->getUpdateTime($route, $key));
                 if($updated_at){
-                    $models[] = (object)[
-                        'name' => $this->getName($model),
+                    $routes[] = (object)[
+                        'name' => $this->getName($route),
                         'updated_at' => $updated_at,
                     ];
                 }
             }
         }
-        $models = (object)$models;
-        Cache::put('models', $models, config('sitemap-xml.cacheLifetime', 0) );
-        return $models;
+        $routes = (object)$routes;
+        Cache::put('routes', $routes, config('sitemap-xml.cacheLifetime', 0) );
+        return $routes;
     }
 
 
-    public function getName($path){
-        $items = 'model';
-        foreach (explode("\\", $path) as $item){
-            if($item) $items = $items . '-' . $item;
-        }
-        return strtolower($items);
-    }
-
-    public function getModel($name){
+    public function getName($route){
         $items = '';
-        foreach (explode("-", $name) as $item){
-            if($item != 'model') $items = $items . '\\' . ucfirst($item);
+        foreach (explode(".", $route) as $item){
+            if(!$items){
+                $items = $items . $item;
+            } else {
+                $items = $items . '-' . $item;
+            }
         }
-        return $items;
+        return strtolower($items . '.xml');
     }
 
     /**
@@ -80,7 +76,8 @@ trait Sitemap
      * @param $key
      * @return mixed|null
      */
-    public function getUpdateTime($model, $key){
+    public function getUpdateTime($route, $key){
+        $model = array_search($route, config('sitemap-xml.models'));
         try{
             $item = $model::query()->whereNotNull('published_at')->orderBy('updated_at', 'desc')->firstOrFail();
             Cache::put($key, $item->updated_at, config('sitemap-xml.cacheLifetime', 0));

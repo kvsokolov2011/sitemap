@@ -13,7 +13,7 @@ class SitemapXmlController extends Controller
     public function index() {
         return response()->view('sitemap::site.sitemap.index', [
             'menu' => Cache::get('sitemap-menu-update', function(){return $this->getTimeMenuUpdate();}),
-            'models' => Cache::get('models', function(){return $this->getUpdateModels();}),
+            'routes' => Cache::get('routes', function(){return $this->getUpdateModels();}),
         ])->header('Content-Type', 'text/xml');
     }
 
@@ -23,14 +23,17 @@ class SitemapXmlController extends Controller
         ])->header('Content-Type', 'text/xml');
     }
 
-    public function model($model){
-        $key = 'sitemap'.$model;
-        $name = explode('-', $model);
-        $name = end($name);
-        $model = $this->getModel($model);
-        if(!Cache::get('key')) $models = $this->getModels($model, $key);
+    public function route($route){
+        $key = 'sitemap-'.$route;
+        $route = preg_replace("(.xml)", "", $route);
+        $route = preg_replace("(-)", ".", $route);
+        $model = array_search($route, config('sitemap-xml.models'));
+        if(!class_exists($model)) return redirect(route('home'));
+        $name = explode('\\', $model);
+        $name = strtolower(end($name));
+        if(!Cache::get($key)) $this->getModels($model, $key);
         return response()->view('sitemap::site.sitemap.links', [
-            'models' => $models,
+            'models' => Cache::get($key),
             'name' => $name,
             'route' => config('sitemap-xml.models')[$model],
         ])->header('Content-Type', 'text/xml');
@@ -41,5 +44,6 @@ class SitemapXmlController extends Controller
         Cache::put($key, $items, config('sitemap-xml.cacheLifetime', 0));
         return $items;
     }
+
 
 }
