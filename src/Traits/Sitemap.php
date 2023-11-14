@@ -4,6 +4,7 @@ namespace Cher4geo35\Sitemap\Traits;
 
 use App\Menu;
 use Illuminate\Support\Facades\Cache;
+use PortedCheese\BaseSettings\Models\SiteConfig;
 
 trait Sitemap
 {
@@ -32,6 +33,17 @@ trait Sitemap
             $menuItems = $menu->items;
             Cache::put($key_menu_items, $menuItems, config('sitemap-xml.cacheLifetime', 0));
             return $menuItems;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    private function getManualItems($key_manual_items) {
+        try{
+            $menu = SiteConfig::query()->orderBy('updated_at', 'desc')->firstOrFail();
+            $updated_at = $menu->updated_at;
+            Cache::put($key_manual_items, $updated_at, config('sitemap-xml.cacheLifetime', 0));
+            return $updated_at;
         } catch (\Exception $e) {
             return null;
         }

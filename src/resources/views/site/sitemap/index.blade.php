@@ -8,6 +8,13 @@
         </sitemap>
     @endif
 
+    @if(config('sitemap-xml.manual') && $manual)
+        <sitemap>
+            <loc>{{ route('sitemap.manual') }}</loc>
+            <lastmod>{{ $manual->toAtomString() }}</lastmod>
+        </sitemap>
+    @endif
+
     @if($routes)
         @foreach($routes as $route)
             <sitemap>

@@ -10,4 +10,5 @@ return [
                     '\App\Page' => 'site.pages.show',
                     '\App\Folder' => 'site.folders.show',
         ],
+    'manual' => ['site.news.index'],// это только как пример роута
 ];
