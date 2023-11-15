@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'cacheLifetime' => 60, //Время кеширования sitemap
+    'cacheLifetime' => 86400, //Время кеширования sitemap
     //Название моделей и их роуты
     'models' => [
                     '\App\News' => 'site.news.show',
