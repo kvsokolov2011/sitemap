@@ -92,11 +92,22 @@ trait Sitemap
     public function getUpdateTime($route, $key){
         $model = array_search($route, config('sitemap-xml.models'));
         try{
-            $item = $model::query()->whereNotNull('published_at')->orderBy('updated_at', 'desc')->firstOrFail();
+            if(isset(config('sitemap-xml.filter')[$model])){
+                $item = $model::query()->whereNotNull(config('sitemap-xml.filter')[$model])->orderBy('updated_at', 'desc')->firstOrFail();
+            } else {
+                $item = $model::query()->orderBy('updated_at', 'desc')->firstOrFail();
+            }
             Cache::put($key, $item->updated_at, config('sitemap-xml.cacheLifetime', 0));
             return $item->updated_at;
         } catch (\Exception $e) {
             return null;
+        }
+    }
+
+    public function modelSearch($pattern){
+        foreach(config('sitemap-xml.models', []) as $model_conf => $model_item){
+            $model_item = preg_replace("(-)", ".", $model_item);
+            if( $model_item == $pattern) return $model_conf;
         }
     }
 

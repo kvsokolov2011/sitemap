@@ -39,9 +39,10 @@ class SitemapXmlController extends Controller
         $key = 'sitemap-'.$route;
         $route = preg_replace("(.xml)", "", $route);
         $route = preg_replace("(-)", ".", $route);
-        $model = array_search($route, config('sitemap-xml.models'));
+        $model = $this->modelSearch($route);
         if(!class_exists($model)) return redirect(route('home'));
         $name = explode('\\', $model);
+        $name = preg_split("/(?<=[a-z])(?![a-z])/", end($name), -1, PREG_SPLIT_NO_EMPTY);
         $name = strtolower(end($name));
         if(!Cache::get($key)) $this->getModels($model, $key);
         return response()->view('sitemap::site.sitemap.links', [
@@ -52,7 +53,11 @@ class SitemapXmlController extends Controller
     }
 
     public function getModels($model, $key){
-        $items = $model::query()->whereNotNull('published_at')->get();
+        if(isset(config('sitemap-xml.filter')[$model])){
+            $items = $model::query()->whereNotNull('published_at')->get();
+        } else {
+            $items = $model::all();
+        }
         Cache::put($key, $items, config('sitemap-xml.cacheLifetime', 0));
         return $items;
     }

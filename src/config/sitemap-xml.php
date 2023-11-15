@@ -9,6 +9,14 @@ return [
                     '\App\Category' => 'catalog.categories.show',
                     '\App\Page' => 'site.pages.show',
                     '\App\Folder' => 'site.folders.show',
+                    '\App\DocumentCategory' => 'site.document-categories.show',
         ],
+    'filter' => [
+        '\App\News' => 'published_at',
+        '\App\Product' => 'published_at',
+        '\App\Category' => 'published_at',
+        '\App\Page' => 'published_at',
+        '\App\Folder' => 'published_at',
+    ],
     'manual' => ['site.news.index'],// это только как пример роута
 ];
