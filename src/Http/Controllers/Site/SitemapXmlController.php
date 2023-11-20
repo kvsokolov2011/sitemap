@@ -10,6 +10,9 @@ class SitemapXmlController extends Controller
 {
     use Sitemap;
 
+    /**
+     * @return mixed
+     */
     public function index() {
         $key_menu = 'sitemap-menu';
         $key_manual = 'sitemap-manual';
@@ -21,6 +24,9 @@ class SitemapXmlController extends Controller
         ])->header('Content-Type', 'text/xml');
     }
 
+    /**
+     * @return mixed
+     */
     public function menu() {
         $key_menu_items = 'sitemap-menu-items';
         return response()->view('sitemap::site.sitemap.menu', [
@@ -28,6 +34,9 @@ class SitemapXmlController extends Controller
         ])->header('Content-Type', 'text/xml');
     }
 
+    /**
+     * @return mixed
+     */
     public function manual() {
         $key_manual_items = 'sitemap-manual-items';
         return response()->view('sitemap::site.sitemap.manual', [
@@ -35,6 +44,10 @@ class SitemapXmlController extends Controller
         ])->header('Content-Type', 'text/xml');
     }
 
+    /**
+     * @param $route
+     * @return mixed
+     */
     public function route($route){
         $key = 'sitemap-'.$route;
         $route = preg_replace("(.xml)", "", $route);
@@ -52,7 +65,12 @@ class SitemapXmlController extends Controller
         ])->header('Content-Type', 'text/xml');
     }
 
-    public function getModels($model, $key){
+    /**
+     * @param $model
+     * @param $key
+     * @return mixed
+     */
+    private function getModels($model, $key){
         if(isset(config('sitemap-xml.filter')[$model])){
             $items = $model::query()->whereNotNull('published_at')->get();
         } else {

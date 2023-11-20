@@ -13,7 +13,7 @@ trait Sitemap
      * @param $key_menu
      * @return null
      */
-    public function getTimeMenuUpdate($key_menu){
+    private function getTimeMenuUpdate($key_menu){
         try{
             $menu = Menu::query()->where('key', 'main')->firstOrFail();
             $menu = $menu->items()->orderBy('updated_at', 'desc')->firstOrFail();
@@ -38,6 +38,10 @@ trait Sitemap
         }
     }
 
+    /**
+     * @param $key_manual_items
+     * @return null
+     */
     private function getManualItems($key_manual_items) {
         try{
             $menu = SiteConfig::query()->orderBy('updated_at', 'desc')->firstOrFail();
@@ -52,7 +56,7 @@ trait Sitemap
     /**
      * @return object
      */
-    public function getUpdateModels($key_route){
+    private function getUpdateModels($key_route){
         $routes = [];
         foreach (config('sitemap-xml.models', []) as $model => $route){
             $key = $this->getName($route);
@@ -71,8 +75,11 @@ trait Sitemap
         return $routes;
     }
 
-
-    public function getName($route){
+    /**
+     * @param $route
+     * @return string
+     */
+    private function getName($route){
         $items = '';
         foreach (explode(".", $route) as $item){
             if(!$items){
@@ -89,7 +96,7 @@ trait Sitemap
      * @param $key
      * @return mixed|null
      */
-    public function getUpdateTime($route, $key){
+    private function getUpdateTime($route, $key){
         $model = array_search($route, config('sitemap-xml.models'));
         try{
             if(isset(config('sitemap-xml.filter')[$model])){
@@ -104,7 +111,11 @@ trait Sitemap
         }
     }
 
-    public function modelSearch($pattern){
+    /**
+     * @param $pattern
+     * @return int|string|void
+     */
+    private function modelSearch($pattern){
         foreach(config('sitemap-xml.models', []) as $model_conf => $model_item){
             $model_item = preg_replace("(-)", ".", $model_item);
             if( $model_item == $pattern) return $model_conf;
