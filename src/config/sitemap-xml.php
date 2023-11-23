@@ -18,5 +18,11 @@ return [
         '\App\Page' => 'published_at',
         '\App\Folder' => 'published_at',
     ],
-    'manual' => ['site.news.index'],// это только как пример роута
+    //Ручное добавление (ниже как пример)
+    'manual' => [
+        'site.news.index',
+        'https://www.потолок-котлас.рф/about/ceilings',
+        'https://www.xn----8sb2abcdqabdd8adh.xn--p1ai/about/furniture',
+        'https://www.xn----8sb2abcdqabdd8adh.xn--p1ai/about/jalousie'
+    ],
 ];
